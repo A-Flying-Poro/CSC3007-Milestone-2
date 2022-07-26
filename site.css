@@ -1,0 +1,61 @@
+body.dark-mode {
+    /*Dark Mode*/
+    background-color: #36393f;
+    color: white;
+    -webkit-transition: background-color .15s ease-in-out;
+    -ms-transition: background-color .15s ease-in-out;
+    transition: background-color .15s ease-in-out;
+}
+
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
+/*.node {
+    stroke: lightgray;
+    stroke-width: 0;
+    transition-duration: 0.2s;
+}
+.node:hover {
+    stroke: black;
+    stroke-width: 2px;
+}*/
+
+.chart-plot-data {
+    stroke: darkgray;
+    stroke-width: 1px;
+    transition-duration: 0.2s;
+}
+.chart-plot-data:hover {
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.data-female {
+    fill: lightcoral;
+}
+.data-male {
+    fill: deepskyblue;
+}
+
+.link {
+    fill: none;
+    stroke: white;
+    stroke-width: 3px;
+    transition-duration: 0.2s;
+}
+
+#tooltip {
+    background-color: lightgray;
+    color: black;
+    border: 1px solid;
+    border-radius: 2px;
+    padding: 5px;
+    position: absolute;
+    opacity: 0;
+}
+
+.legend-label {
+    fill: white;
+    font-size: large;
+}

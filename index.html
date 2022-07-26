@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSC3007 Assignment</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+    <link rel="stylesheet" href="site.css" />
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js" defer></script>
+    <script src="site.js" defer></script>
+</head>
+<body class="container dark-mode">
+<div class="d-flex flex-column align-items-center my-2">
+    <h2 class="my-4">
+        Profits made by company
+    </h2>
+
+    <div id="tooltip" class="d-none flex-column align-items-center">
+        <span class="tooltip-data">
+            <b><span>ID</span>:</b>
+            <span data-json-key="id"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Age</span>:</b>
+            <span data-json-key="age"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Gender</span>:</b>
+            <span data-json-key="gender"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Nationality</span>:</b>
+            <span data-json-key="nationality"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Occupation</span>:</b>
+            <span data-json-key="occupation"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Organisation</span>:</b>
+            <span data-json-key="organization"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Date</span>:</b>
+            <span data-json-key="date"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Serology</span>:</b>
+            <span data-json-key="serology"></span>
+        </span>
+
+        <span class="tooltip-data">
+            <b><span>Vaccinated</span>:</b>
+            <span data-json-key="vaccinated"></span>
+        </span>
+    </div>
+
+    <div id="dataChart" class="my-4 w-100">
+    </div>
+</div>
+</body>
+</html>
