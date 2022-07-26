@@ -142,7 +142,7 @@ async function onLoad() {
             .attr('transform', (d, i) => `translate(0, ${d3.sum(sizeScales.slice(0, i)) * 2 + legendInnerYPadding * i})`)
             .attr('data-channel', d => d);
         svgLegendChannel.append('circle')
-            .attr('class', 'chart-legend-side-channel-size')
+            .attr('class', 'chart-legend-side-channel-illustration')
             .attr('cx', sizeScaleMax)
             .attr('cy', d => d)
             .attr('r', d => d)
@@ -154,7 +154,7 @@ async function onLoad() {
             .attr('text-anchor', 'left')
             .attr('dominant-baseline', 'middle')
             .attr('fill', 'currentColor')
-            .attr('font-size', '0.8rem')
+            .attr('font-size', '0.7rem')
             .text(d => formatCurrency(sizeScale.invert(d)));
 
         // Calculating the legend width
@@ -168,10 +168,36 @@ async function onLoad() {
     (function legendTop() {
         const legendCircleSize = 10
 
-        const legendInnerXPadding = 10
+        const legendInnerXPadding = 5
+        const legendBetweenXPadding = 15
 
         const svgLegend = svg.append('g')
             .attr('id', 'chart-legend-top');
+        const svgLegendChannels = svgLegend.append('g')
+            .attr('id', 'chart-legend-top-channels')
+            .attr('transform', `translate(0, 0)`);
 
+        const svgLegendChannel = svgLegendChannels.selectAll('g')
+            .data(industryNames.values())
+            .enter()
+            .append('g')
+            .attr('class', 'chart-legend-top-channel')
+            .attr('data-channel', d => d);
+        svgLegendChannel.append('circle')
+            .attr('class', 'chart-legend-top-channel-illustration')
+            .attr('cx', legendCircleSize)
+            .attr('cy', legendCircleSize)
+            .attr('r', legendCircleSize)
+            .attr('fill', d => colourScale(d));
+        svgLegendChannel.append('text')
+            .attr('class', 'chart-legend-top-channel-label')
+            .attr('x', legendCircleSize * 2 + legendInnerXPadding)
+            .attr('y', legendCircleSize)
+            .attr('text-anchor', 'left')
+            .attr('dominant-baseline', 'middle')
+            .attr('fill', 'currentColor')
+            .attr('font-size', '0.7rem')
+            .text(d => d);
+        svgLegendChannel.attr('transform', (d, i) => `translate(${d3.sum(d3.selectAll('.chart-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
     })();
 }
