@@ -219,9 +219,7 @@ async function onLoad() {
         const svgDefs = svg.append('defs');
 
 
-
         // Scales
-
         // Chart Stuff
         (function chart(){
             // const chartMarginX = 40
@@ -259,6 +257,25 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.company))
                 .attr('width', d => xAxis(d.profit))
                 .attr('height', yAxis.bandwidth())
+      
+            
+            svgChart.selectAll("text")
+            .attr('id', 'chart2-plot')
+            .data(data)
+            .enter()
+            .append("text")
+            .attr('x', d => 10 + xAxis(d.profit))
+            .attr('y', d => yAxis(d.company) + yAxis.bandwidth() / 2  )
+            .attr('width', d => xAxis(d.profit))
+            .attr('height', yAxis.bandwidth())
+            .attr('text-anchor', 'left')
+            .attr('dominant-baseline', 'middle')
+            .attr('fill', 'currentColor')
+            .attr('font-size', '0.7rem')
+            .text(function(d) { return '$' + d.profit; });
+         
+           
+                
 
             // Labels
             // x-axis
@@ -266,6 +283,8 @@ async function onLoad() {
                 .attr('id', 'chart2-axis-x')
                 .attr('transform', `translate(0, ${chartHeight})`)
                 .call(d3.axisBottom(xAxis).tickFormat(d3.format("-$,.2f")));
+            
+            
             // y-axis
             svgChart.append('g')
                 .attr('id', 'chart2-axis-y')
