@@ -18,9 +18,45 @@ async function onLoad() {
     const industryNamesOriginal = new Set();
     dataOriginal.forEach(companyProfit => industryNamesOriginal.add(companyProfit.industry));
 
-    const tooltip = d3.select('#tooltip');
+    const formatCurrency = d3.format("-$,.2f");
+    const formatSI = d3.format("-$~s");
+
+    // const tooltip = d3.select('#tooltip');
 
     (function chart1(){
+        // Tooltip
+        const tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .html((event, d) => {
+                const tooltipElement = d3.select(document.createElement('span'));
+
+                const values = [{
+                    key: "Company", value: d.company
+                }, {
+                    key: "Industry", value: d.industry
+                }, {
+                    key: "2016 Net Income", value: formatSI(d.income).replace('G', 'B')
+                }, {
+                    key: "Fortune 500 Ranking", value: d.ranking
+                }, {
+                    key: "Profit/sec", value: formatCurrency(d.profit)
+                }];
+
+                const tooltipRow = tooltipElement.selectAll('span')
+                    .data(values)
+                    .enter()
+                    .append('span');
+                tooltipRow.append('b')
+                    .text(d => d.key + ': ');
+                tooltipRow.append('span')
+                    .text(d => d.value);
+                tooltipRow.append('br');
+
+                return tooltipElement.node().outerHTML
+            });
+
+
+
         // Data processing
         const data = dataOriginal/*.sort((a, b) => b.profit - a.profit).slice(0, 5)*/;
         const industryNames = new Set();
@@ -38,6 +74,7 @@ async function onLoad() {
             .attr('viewBox', [0, 0, viewBoxWidth, viewBoxHeight])
             .append('g')
             .attr('transform', `translate(${marginX}, ${marginY})`)
+            .call(tip)
         const svgDefs = svg.append('defs');
 
 
@@ -87,6 +124,8 @@ async function onLoad() {
                 .attr('r', d => sizeScale(d.income))
                 .attr('cx', d => xAxis(d.ranking))
                 .attr('cy', d => yAxis(d.profit))
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide)
 
             // Labels
             // x-axis
@@ -103,7 +142,7 @@ async function onLoad() {
             // y-axis
             svgChart.append('g')
                 .attr('id', 'chart1-axis-y')
-                .call(d3.axisLeft(yAxis).tickFormat(d3.format("-$,.2f")));
+                .call(d3.axisLeft(yAxis).tickFormat(formatCurrency));
             svgChart.append('text')
                 .attr('fill', 'currentColor')
                 .attr('transform', `translate(${-chartMarginLeft - 30}, ${chartHeight / 2}) rotate(270)`)
@@ -159,7 +198,7 @@ async function onLoad() {
                 .attr('dominant-baseline', 'middle')
                 .attr('fill', 'currentColor')
                 .attr('font-size', '0.7rem')
-                .text(d => d3.format("-$~s")(sizeScale.invert(d)).replace('G', 'B'));
+                .text(d => formatSI(sizeScale.invert(d)).replace('G', 'B'));
 
             // Calculating the legend width
             let legendWidth = Math.max(bboxLegendTitle.width, d3.max(svgLegendChannels.selectAll('g').nodes(), n => n.getBBox().width));
@@ -231,14 +270,45 @@ async function onLoad() {
                     .attr('font-size', '0.7rem')
                     .text(d => d);
 
-                console.log(Array.from(industryNames.values()).slice(-2))
-
                 svgLegendChannel2.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels2.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
                 svgLegendChannels2.attr('transform', `translate(${(width - svgLegendChannels2.node().getBBox().width) / 2}, 0)`);
         })();
     })();
 
     (function chart2(){
+        // Tooltip
+        const tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .html((event, d) => {
+                const tooltipElement = d3.select(document.createElement('span'));
+
+                const values = [{
+                    key: "Company", value: d.company
+                }, {
+                    key: "Industry", value: d.industry
+                }, {
+                    key: "2016 Net Income", value: formatSI(d.income).replace('G', 'B')
+                }, {
+                    key: "Fortune 500 Ranking", value: d.ranking
+                }, {
+                    key: "Profit/sec", value: formatCurrency(d.profit)
+                }];
+
+                const tooltipRow = tooltipElement.selectAll('span')
+                    .data(values)
+                    .enter()
+                    .append('span');
+                tooltipRow.append('b')
+                    .text(d => d.key + ': ');
+                tooltipRow.append('span')
+                    .text(d => d.value);
+                tooltipRow.append('br');
+
+                return tooltipElement.node().outerHTML
+            });
+
+
+
         // Data processing
         const data = dataOriginal.sort((a, b) => b.profit - a.profit).slice(0, 5);
 
@@ -254,6 +324,7 @@ async function onLoad() {
             .attr('viewBox', [0, 0, viewBoxWidth, viewBoxHeight])
             .append('g')
             .attr('transform', `translate(${marginX}, ${marginY})`)
+            .call(tip)
         const svgDefs = svg.append('defs');
 
 
@@ -296,7 +367,8 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.company))
                 .attr('width', d => xAxis(d.profit))
                 .attr('height', yAxis.bandwidth())
-
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide)
 
             svgChart.selectAll("text")
                 .attr('id', 'chart2-plot')
@@ -311,7 +383,7 @@ async function onLoad() {
                 .attr('dominant-baseline', 'middle')
                 .attr('fill', 'currentColor')
                 .attr('font-size', '0.7rem')
-                .text(d => d3.format("-$,.2f")(d.profit));
+                .text(d => formatCurrency(d.profit));
 
 
 
@@ -320,7 +392,7 @@ async function onLoad() {
             svgChart.append('g')
                 .attr('id', 'chart2-axis-x')
                 .attr('transform', `translate(0, ${chartHeight})`)
-                .call(d3.axisBottom(xAxis).tickFormat(d3.format("-$,.2f")));
+                .call(d3.axisBottom(xAxis).tickFormat(formatCurrency));
 
 
             // y-axis
@@ -339,6 +411,33 @@ async function onLoad() {
     })();
 
     (function chart3() {
+        // Tooltip
+        const tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .html((event, d) => {
+                const tooltipElement = d3.select(document.createElement('span'));
+
+                const values = [{
+                    key: "Industry", value: d.industry
+                }, {
+                    key: "Total profit/sec", value: formatCurrency(d.profit)
+                }];
+
+                const tooltipRow = tooltipElement.selectAll('span')
+                    .data(values)
+                    .enter()
+                    .append('span');
+                tooltipRow.append('b')
+                    .text(d => d.key + ': ');
+                tooltipRow.append('span')
+                    .text(d => d.value);
+                tooltipRow.append('br');
+
+                return tooltipElement.node().outerHTML
+            });
+
+
+
         // Data processing
         const data = [...industryNamesOriginal].map(industry => ({
             industry: industry,
@@ -357,6 +456,7 @@ async function onLoad() {
             .attr('viewBox', [0, 0, viewBoxWidth, viewBoxHeight])
             .append('g')
             .attr('transform', `translate(${marginX}, ${marginY})`)
+            .call(tip)
         const svgDefs = svg.append('defs');
 
 
@@ -397,10 +497,12 @@ async function onLoad() {
                 .attr('x', d => xAxis(d.industry))
                 .attr('y', d => yAxis(d.profit))
                 .attr('width', xAxis.bandwidth())
-                .attr('height', d => chartHeight - yAxis(d.profit));
-            
+                .attr('height', d => chartHeight - yAxis(d.profit))
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
 
-                svgChart.selectAll("text")
+
+            svgChart.selectAll("text")
                 .attr('id', 'chart3-plot')
                 .data(data)
                 .enter()
@@ -413,7 +515,7 @@ async function onLoad() {
                 .attr('dominant-baseline', 'middle')
                 .attr('fill', 'currentColor')
                 .attr('font-size', '0.7rem')
-                .text(function(d) { return '$' + Math.round(d.profit * 100)/100; });
+                .text(d => formatCurrency(d.profit));
 
             // Labels
             // x-axis
@@ -429,15 +531,13 @@ async function onLoad() {
             svgChart.append('g')
                 .attr('id', 'chart3-axis-y')
                 .attr('transform', `translate(0, 0)`)
-                .call(d3.axisLeft(yAxis).tickFormat(d3.format("-$,.2f")));
+                .call(d3.axisLeft(yAxis).tickFormat(formatCurrency));
             svgChart.append('text')
                 .attr('fill', 'currentColor')
                 .attr('transform', `translate(${-chartMarginLeft - 30}, ${chartHeight / 2}) rotate(270)`)
                 .attr('text-anchor', 'middle')
                 .attr('font-size', '1rem')
                 .text('Profits per second');
-
-                
         })();
     })();
 }
