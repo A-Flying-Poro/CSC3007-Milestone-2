@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 async function onLoad() {
     const [dataOriginal] = await Promise.all([
-        d3.csv('data/company-profits.csv', data => ({
+        d3.csv('https://raw.githubusercontent.com/A-Flying-Poro/CSC3007-Milestone-2/main/data/company-profits.csv', data => ({
             company: data['Company'],
             industry: data['Industry'],
             income: +data['2016 Net Income'],
@@ -242,7 +242,7 @@ async function onLoad() {
         // Data processing
         const data = dataOriginal.sort((a, b) => b.profit - a.profit).slice(0, 5);
 
-        const viewBoxHeight = 500
+        const viewBoxHeight = 400
         const viewBoxWidth = 800
         const marginX = 50
         const marginY = 20
@@ -261,7 +261,7 @@ async function onLoad() {
         // Chart Stuff
         (function chart(){
             // const chartMarginX = 40
-            const chartMarginLeft = 40
+            const chartMarginLeft = 60
             const chartMarginRight = 20
             const chartMarginY = 40
             const chartWidth = width - chartMarginLeft - chartMarginRight
@@ -279,7 +279,7 @@ async function onLoad() {
             const yAxis = d3.scaleBand()
                 .domain(data.map(d => d.company))
                 .range([0, chartHeight])
-                .padding([0.6]);
+                .padding([0.4]);
 
             // Data points
             svgChart.append('g')
@@ -342,10 +342,10 @@ async function onLoad() {
         const data = [...industryNamesOriginal].map(industry => ({
             industry: industry,
             profit: d3.sum(dataOriginal.filter(d => d.industry === industry), d => d.profit)
-        })).sort((a, b) => b.profit - a.profit);
+        })).sort((a, b) => b.profit - a.profit).slice(0, 5);
 
         const viewBoxHeight = 500
-        const viewBoxWidth = 800
+        const viewBoxWidth = 1000
         const marginX = 50
         const marginY = 20
         const height = viewBoxHeight - marginY * 2
@@ -383,6 +383,7 @@ async function onLoad() {
                 .domain([0, d3.max(data, d => d.profit)]).nice()
                 .range([chartHeight, 0]);
 
+            // Data points
             svgChart.append('g')
                 .attr('id', 'chart3-plot')
                 .selectAll('rect')
@@ -396,40 +397,49 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.profit))
                 .attr('width', xAxis.bandwidth())
                 .attr('height', d => chartHeight - yAxis(d.profit));
+            
+
+                svgChart.selectAll("text")
+                .attr('id', 'chart3-plot')
+                .data(data)
+                .enter()
+                .append("text")
+                .attr('x', d => xAxis(d.industry) + xAxis.bandwidth() / 2)
+                .attr('y', d => yAxis(d.profit) - 10)
+                .attr('width', xAxis.bandwidth())
+                .attr('height', d => yAxis(d.profit))
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'middle')
+                .attr('fill', 'currentColor')
+                .attr('font-size', '0.7rem')
+                .text(function(d) { return '$' + Math.round(d.profit * 100)/100; });
+
+            // Labels
+            // x-axis
+            svgChart.append('g')
+                .attr('id', 'chart3-axis-x')
+                .call(d3.axisBottom(xAxis)/*.tickSizeOuter(0)*/)
+                .attr('transform', `translate(0, ${chartHeight})`)
+                .selectAll('.tick text')
+                // .attr('transform', `rotate(5)`)
+                /*.call(wrap, chartMarginLeft + 30)*/;
+
+            // y-axis
+            svgChart.append('g')
+            .attr('id', 'chart3-axis-y')
+            .attr('transform', `translate(0, 0)`)
+            .call(d3.axisLeft(yAxis).tickFormat(d3.format("-$,.2f")));
+
+            
+
+            svgChart.append('text')
+                .attr('fill', 'currentColor')
+                .attr('transform', `translate(${-chartMarginLeft - 30}, ${chartHeight / 2}) rotate(270)`)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '1rem')
+                .text('Profits per second');
+
+                
         })();
     })();
-}
-
-// https://stackoverflow.com/a/24785497
-function wrap(text, width) {
-    text.each(function () {
-        let text = d3.select(this),
-            words = text.text().split(/\s+/).reverse(),
-            word,
-            line = [],
-            lineNumber = 0,
-            lineHeight = 1.1, // ems
-            x = text.attr("x"),
-            y = text.attr("y"),
-            dy = 0, //parseFloat(text.attr("dy")),
-            tspan = text.text(null)
-                .append("tspan")
-                .attr("x", x)
-                .attr("y", y)
-                .attr("dy", dy + "em");
-        while (word = words.pop()) {
-            line.push(word);
-            tspan.text(line.join(" "));
-            if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = text.append("tspan")
-                    .attr("x", x)
-                    .attr("y", y)
-                    .attr("dy", ++lineNumber * lineHeight + dy + "em")
-                    .text(word);
-            }
-        }
-    });
 }
