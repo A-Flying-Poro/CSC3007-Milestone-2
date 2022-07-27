@@ -345,7 +345,7 @@ async function onLoad() {
         })).sort((a, b) => b.profit - a.profit).slice(0, 5);
 
         const viewBoxHeight = 500
-        const viewBoxWidth = 1000
+        const viewBoxWidth = 900
         const marginX = 50
         const marginY = 20
         const height = viewBoxHeight - marginY * 2
