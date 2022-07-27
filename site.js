@@ -217,5 +217,101 @@ async function onLoad() {
             .append('g')
             .attr('transform', `translate(${marginX}, ${marginY})`)
         const svgDefs = svg.append('defs');
+
+
+
+        // Scales
+
+        // Chart Stuff
+        (function chart(){
+            // const chartMarginX = 40
+            const chartMarginLeft = 40
+            const chartMarginRight = 20
+            const chartMarginY = 40
+            const chartWidth = width - chartMarginLeft - chartMarginRight
+            const chartHeight = height - chartMarginY * 2
+
+            const svgChart = svg.append('g')
+                .attr('transform', `translate(${chartMarginLeft}, ${chartMarginY})`);
+
+            // x-axis
+            const xAxis = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.profit)]).nice()
+                .range([0, chartWidth]);
+
+            // y-axis
+            const yAxis = d3.scaleBand()
+                .domain(data.map(d => d.company))
+                .range([0, chartHeight])
+                .padding([0.4]);
+
+            // Data points
+            svgChart.append('g')
+                .attr('id', 'chart2-plot')
+                .selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'chart2-plot-data chart-plot-data-hover')
+                .attr('data-company', d => d.company)
+                .attr('data-profit', d => d.profit)
+                .attr('x', 0)
+                .attr('y', d => yAxis(d.company))
+                .attr('width', d => xAxis(d.profit))
+                .attr('height', yAxis.bandwidth())
+
+            // Labels
+            // x-axis
+            svgChart.append('g')
+                .attr('id', 'chart2-axis-x')
+                .attr('transform', `translate(0, ${chartHeight})`)
+                .call(d3.axisBottom(xAxis).tickFormat(d3.format("-$,.2f")));
+            // y-axis
+            svgChart.append('g')
+                .attr('id', 'chart2-axis-y')
+                .call(d3.axisLeft(yAxis)/*.tickSizeOuter(0)*/)
+                .selectAll('.tick text')
+                /*.call(wrap, chartMarginLeft + 30)*/;
+            svgChart.append('text')
+                .attr('fill', 'currentColor')
+                .attr('transform', `translate(${chartWidth / 2}, ${chartHeight + 40})`)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '1rem')
+                .text('Profits per second')
+        })();
     })();
+}
+
+// https://stackoverflow.com/a/24785497
+function wrap(text, width) {
+    text.each(function () {
+        let text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                .append("tspan")
+                .attr("x", x)
+                .attr("y", y)
+                .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                    .text(word);
+            }
+        }
+    });
 }

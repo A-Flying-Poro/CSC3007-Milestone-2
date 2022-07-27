@@ -35,6 +35,10 @@ html {
     fill: lightcoral;
 }
 
+.chart2-plot-data {
+    fill: mistyrose;
+}
+
 .link {
     fill: none;
     stroke: white;
