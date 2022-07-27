@@ -181,7 +181,7 @@ async function onLoad() {
                 .attr('id', 'chart1-legend-top-channels');
 
             const svgLegendChannel = svgLegendChannels.selectAll('g')
-                .data(industryNames.values())
+                .data(Array.from(industryNames.values()).slice(0, 4))
                 .enter()
                 .append('g')
                 .attr('class', 'chart1-legend-top-channel')
@@ -203,7 +203,38 @@ async function onLoad() {
                 .text(d => d);
 
             svgLegendChannel.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
-            svgLegendChannels.attr('transform', `translate(${(width - svgLegendChannels.node().getBBox().width) / 2}, 0)`);
+            svgLegendChannels.attr('transform', `translate(${(width - svgLegendChannels.node().getBBox().width) / 2}, -20)`);
+
+
+            const svgLegendChannels2 = svgLegend.append('g')
+            .attr('id', 'chart1-legend-top-channels');
+
+            const svgLegendChannel2 = svgLegendChannels2.selectAll('g')
+                    .data(Array.from(industryNames.values()).slice(-3))
+                    .enter()
+                    .append('g')
+                    .attr('class', 'chart1-legend-top-channel')
+                    .attr('data-channel', d => d);
+                svgLegendChannel2.append('circle')
+                    .attr('class', 'chart1-legend-top-channel-illustration')
+                    .attr('cx', legendCircleSize)
+                    .attr('cy', legendCircleSize)
+                    .attr('r', legendCircleSize)
+                    .attr('fill', d => colourScale(d));
+                svgLegendChannel2.append('text')
+                    .attr('class', 'chart1-legend-top-channel-label')
+                    .attr('x', legendCircleSize * 2 + legendInnerXPadding)
+                    .attr('y', legendCircleSize)
+                    .attr('text-anchor', 'left')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', 'currentColor')
+                    .attr('font-size', '0.7rem')
+                    .text(d => d);
+
+                console.log(Array.from(industryNames.values()).slice(-2))
+
+                svgLegendChannel2.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels2.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
+                svgLegendChannels2.attr('transform', `translate(${(width - svgLegendChannels2.node().getBBox().width) / 2}, 0)`);
         })();
     })();
 
@@ -280,7 +311,6 @@ async function onLoad() {
             .attr('fill', 'currentColor')
             .attr('font-size', '0.7rem')
             .text(function(d) { return '$' + d.profit; });
-
 
 
 
