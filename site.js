@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 async function onLoad() {
     const [dataOriginal] = await Promise.all([
-        d3.csv('https://raw.githubusercontent.com/A-Flying-Poro/CSC3007-Milestone-2/main/data/company-profits.csv', data => ({
+        d3.csv('data/company-profits.csv', data => ({
             company: data['Company'],
             industry: data['Industry'],
             income: +data['2016 Net Income'],
@@ -263,12 +263,13 @@ async function onLoad() {
             // const chartMarginX = 40
             const chartMarginLeft = 60
             const chartMarginRight = 20
-            const chartMarginY = 40
+            const chartMarginTop = 10
+            const chartMarginBottom = 40
             const chartWidth = width - chartMarginLeft - chartMarginRight
-            const chartHeight = height - chartMarginY * 2
+            const chartHeight = height - chartMarginTop - chartMarginBottom
 
             const svgChart = svg.append('g')
-                .attr('transform', `translate(${chartMarginLeft}, ${chartMarginY})`);
+                .attr('transform', `translate(${chartMarginLeft}, ${chartMarginTop})`);
 
             // x-axis
             const xAxis = d3.scaleLinear()
@@ -298,19 +299,19 @@ async function onLoad() {
 
 
             svgChart.selectAll("text")
-            .attr('id', 'chart2-plot')
-            .data(data)
-            .enter()
-            .append("text")
-            .attr('x', d => 10 + xAxis(d.profit))
-            .attr('y', d => yAxis(d.company) + yAxis.bandwidth() / 2  )
-            .attr('width', d => xAxis(d.profit))
-            .attr('height', yAxis.bandwidth())
-            .attr('text-anchor', 'left')
-            .attr('dominant-baseline', 'middle')
-            .attr('fill', 'currentColor')
-            .attr('font-size', '0.7rem')
-            .text(function(d) { return '$' + d.profit; });
+                .attr('id', 'chart2-plot')
+                .data(data)
+                .enter()
+                .append("text")
+                .attr('x', d => xAxis(d.profit) + 10)
+                .attr('y', d => yAxis(d.company) + yAxis.bandwidth() / 2)
+                .attr('width', d => xAxis(d.profit))
+                .attr('height', yAxis.bandwidth())
+                .attr('text-anchor', 'left')
+                .attr('dominant-baseline', 'middle')
+                .attr('fill', 'currentColor')
+                .attr('font-size', '0.7rem')
+                .text(d => d3.format("-$,.2f")(d.profit));
 
 
 
@@ -345,7 +346,7 @@ async function onLoad() {
         })).sort((a, b) => b.profit - a.profit).slice(0, 5);
 
         const viewBoxHeight = 500
-        const viewBoxWidth = 1000
+        const viewBoxWidth = 900
         const marginX = 50
         const marginY = 20
         const height = viewBoxHeight - marginY * 2
@@ -426,12 +427,9 @@ async function onLoad() {
 
             // y-axis
             svgChart.append('g')
-            .attr('id', 'chart3-axis-y')
-            .attr('transform', `translate(0, 0)`)
-            .call(d3.axisLeft(yAxis).tickFormat(d3.format("-$,.2f")));
-
-            
-
+                .attr('id', 'chart3-axis-y')
+                .attr('transform', `translate(0, 0)`)
+                .call(d3.axisLeft(yAxis).tickFormat(d3.format("-$,.2f")));
             svgChart.append('text')
                 .attr('fill', 'currentColor')
                 .attr('transform', `translate(${-chartMarginLeft - 30}, ${chartHeight / 2}) rotate(270)`)

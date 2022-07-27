@@ -11,6 +11,11 @@ html {
     font-family: 'Roboto', sans-serif;
 }
 
+.text-highlight {
+    font-size: xx-large;
+    font-weight: bold;
+}
+
 /*.node {
     stroke: lightgray;
     stroke-width: 0;

@@ -15,64 +15,109 @@
     <script src="site.js" defer></script>
 </head>
 <body class="container dark-mode">
-<div class="d-flex flex-column align-items-center my-2">
-    <h2 class="my-4" style="text-align: center;">
-        What the Most Profitable Companies Make per Second
-    </h2>
+    <div class="row my-2 align-items-center">
+        <h2 class="w-100 my-4 text-center">
+            What the Most Profitable Companies Make per Second
+        </h2>
+        <div class="col col-lg-10 mt-2 mx-auto">
+            <p>
+                Have you ever thought of which company makes the most money in the world?
+                The numbers were gathered, crunched and tallied.
+                Here’s the top 25 wealthiest companies in the world and find out how much each company earns per second.
+            </p>
+            <p>
+                Companies that have the highest amount of profits are in the <b>Technology/Internet</b> or <b>Banking/Finance</b> industry.
+                Fortune 500 ranking is based on the revenue which differs from the profit per second.
+                <b>Walmart</b> is ranked number <span class="text-highlight">1</span> in the Fortune 500 ranking but profit less than <span class="text-highlight">⅓</span> as compared to Apple.
+            </p>
+        </div>
+        <div id="dataChart1" class="my-4 w-100">
+        </div>
 
-    <div id="tooltip" class="d-none flex-column align-items-center">
-        <span class="tooltip-data">
-            <b><span>ID</span>:</b>
-            <span data-json-key="id"></span>
-        </span>
+        <hr class="my-4" />
 
-        <span class="tooltip-data">
-            <b><span>Age</span>:</b>
-            <span data-json-key="age"></span>
-        </span>
+        <!-- Chart 2 -->
+        <h2 class="w-100 text-center">
+            What is the richest company in the world?
+        </h2>
+        <div class="col-12 row">
+            <div id="dataChart2" class="col-12 col-xl-8">
+            </div>
+            <div class="col my-auto">
+                <p>
+                    Currently the top earning company in terms of profit is Apple whose profits is <span class="text-highlight">2&times;</span> the amount compared to the top 4 companies such as JP Morgan Chase,
+                    Bershire Hathaways and Wells Fargo.
+                    For a company to overtake Apple, the company would need to generate a staggering profit of <span class="text-highlight">$1,444.75</span>.
+                </p>
+            </div>
+        </div>
 
-        <span class="tooltip-data">
-            <b><span>Gender</span>:</b>
-            <span data-json-key="gender"></span>
-        </span>
+        <hr class="my-4" />
 
-        <span class="tooltip-data">
-            <b><span>Nationality</span>:</b>
-            <span data-json-key="nationality"></span>
-        </span>
+        <!-- Chart 3 -->
+        <h2 class="w-100 text-center">
+            What is the most profitable industry?
+        </h2>
+        <div class="col-12 row">
+            <div id="dataChart3" class="col-12 col-xl-8">
+            </div>
+            <div class="col my-auto order-first">
+                <p>
+                    <b>Technology/Internet</b> and <b>Banking/Finance</b> industry has the highest profit per second.
+                    From Telecommunications/Mass Media to Banking/Finance, the difference is a whopping <span class="text-highlight">2x</span> of the profit per second earned.
+                    For any new organisation, they can tap into the top industries and would likely have the potential to strive in earning big profits.
+                </p>
+            </div>
+        </div>
 
-        <span class="tooltip-data">
-            <b><span>Occupation</span>:</b>
-            <span data-json-key="occupation"></span>
-        </span>
 
-        <span class="tooltip-data">
-            <b><span>Organisation</span>:</b>
-            <span data-json-key="organization"></span>
-        </span>
 
-        <span class="tooltip-data">
-            <b><span>Date</span>:</b>
-            <span data-json-key="date"></span>
-        </span>
+        <div id="tooltip" class="d-none flex-column align-items-center">
+            <span class="tooltip-data">
+                <b><span>ID</span>:</b>
+                <span data-json-key="id"></span>
+            </span>
 
-        <span class="tooltip-data">
-            <b><span>Serology</span>:</b>
-            <span data-json-key="serology"></span>
-        </span>
+            <span class="tooltip-data">
+                <b><span>Age</span>:</b>
+                <span data-json-key="age"></span>
+            </span>
 
-        <span class="tooltip-data">
-            <b><span>Vaccinated</span>:</b>
-            <span data-json-key="vaccinated"></span>
-        </span>
+            <span class="tooltip-data">
+                <b><span>Gender</span>:</b>
+                <span data-json-key="gender"></span>
+            </span>
+
+            <span class="tooltip-data">
+                <b><span>Nationality</span>:</b>
+                <span data-json-key="nationality"></span>
+            </span>
+
+            <span class="tooltip-data">
+                <b><span>Occupation</span>:</b>
+                <span data-json-key="occupation"></span>
+            </span>
+
+            <span class="tooltip-data">
+                <b><span>Organisation</span>:</b>
+                <span data-json-key="organization"></span>
+            </span>
+
+            <span class="tooltip-data">
+                <b><span>Date</span>:</b>
+                <span data-json-key="date"></span>
+            </span>
+
+            <span class="tooltip-data">
+                <b><span>Serology</span>:</b>
+                <span data-json-key="serology"></span>
+            </span>
+
+            <span class="tooltip-data">
+                <b><span>Vaccinated</span>:</b>
+                <span data-json-key="vaccinated"></span>
+            </span>
+        </div>
     </div>
-
-    <div id="dataChart1" class="my-4 w-100">
-    </div>
-    <div id="dataChart2" class="my-4 w-100">
-    </div>
-    <div id="dataChart3" class="my-4 w-100">
-    </div>
-</div>
 </body>
 </html>
