@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 async function onLoad() {
     let [data] = await Promise.all([
-        d3.csv('data/company-profits.csv', data => ({
+        d3.csv('https://raw.githubusercontent.com/A-Flying-Poro/CSC3007-Milestone-2/main/data/company-profits.csv', data => ({
             company: data['Company'],
             industry: data['Industry'],
             income: +data['2016 Net Income'],
@@ -15,7 +15,7 @@ async function onLoad() {
     ]);
 
     // Data processing
-    data = data.sort((a, b) => b.profit - a.profit).slice(0, 5);
+    // data = data.sort((a, b) => b.profit - a.profit).slice(0, 5);
     const industryNames = new Set();
     data.forEach(companyProfit => industryNames.add(companyProfit.industry));
 
@@ -177,7 +177,7 @@ async function onLoad() {
                 .attr('id', 'chart1-legend-top-channels');
 
             const svgLegendChannel = svgLegendChannels.selectAll('g')
-                .data(industryNames.values())
+                .data(Array.from(industryNames.values()).slice(0, 4))
                 .enter()
                 .append('g')
                 .attr('class', 'chart1-legend-top-channel')
@@ -197,9 +197,43 @@ async function onLoad() {
                 .attr('fill', 'currentColor')
                 .attr('font-size', '0.7rem')
                 .text(d => d);
+            
+            // console.log(Array.from(industryNames.values()).slice(0, 4))
+            // firstFiveSVGLegend = svgLegendChannel._groups[0].slice(0, 5);
 
             svgLegendChannel.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
-            svgLegendChannels.attr('transform', `translate(${(width - svgLegendChannels.node().getBBox().width) / 2}, 0)`);
+            svgLegendChannels.attr('transform', `translate(${(width - svgLegendChannels.node().getBBox().width) / 2}, -20)`);
+        
+        
+            const svgLegendChannels2 = svgLegend.append('g')
+            .attr('id', 'chart1-legend-top-channels');
+    
+            const svgLegendChannel2 = svgLegendChannels2.selectAll('g')
+                    .data(Array.from(industryNames.values()).slice(-3))
+                    .enter()
+                    .append('g')
+                    .attr('class', 'chart1-legend-top-channel')
+                    .attr('data-channel', d => d);
+                svgLegendChannel2.append('circle')
+                    .attr('class', 'chart1-legend-top-channel-illustration')
+                    .attr('cx', legendCircleSize)
+                    .attr('cy', legendCircleSize)
+                    .attr('r', legendCircleSize)
+                    .attr('fill', d => colourScale(d));
+                svgLegendChannel2.append('text')
+                    .attr('class', 'chart1-legend-top-channel-label')
+                    .attr('x', legendCircleSize * 2 + legendInnerXPadding)
+                    .attr('y', legendCircleSize)
+                    .attr('text-anchor', 'left')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', 'currentColor')
+                    .attr('font-size', '0.7rem')
+                    .text(d => d);
+                
+                console.log(Array.from(industryNames.values()).slice(-2))
+    
+                svgLegendChannel2.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels2.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
+                svgLegendChannels2.attr('transform', `translate(${(width - svgLegendChannels2.node().getBBox().width) / 2}, 0)`);
         })();
     })();
 
@@ -219,7 +253,9 @@ async function onLoad() {
         const svgDefs = svg.append('defs');
 
 
+
         // Scales
+
         // Chart Stuff
         (function chart(){
             // const chartMarginX = 40
@@ -283,8 +319,6 @@ async function onLoad() {
                 .attr('id', 'chart2-axis-x')
                 .attr('transform', `translate(0, ${chartHeight})`)
                 .call(d3.axisBottom(xAxis).tickFormat(d3.format("-$,.2f")));
-            
-            
             // y-axis
             svgChart.append('g')
                 .attr('id', 'chart2-axis-y')
