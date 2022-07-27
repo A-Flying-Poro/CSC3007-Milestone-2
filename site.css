@@ -21,21 +21,18 @@ html {
     stroke-width: 2px;
 }*/
 
-.chart-plot-data {
+.chart-plot-data-hover {
     stroke: darkgray;
     stroke-width: 1px;
     transition-duration: 0.2s;
 }
-.chart-plot-data:hover {
+.chart-plot-data-hover:hover {
     stroke: black;
     stroke-width: 2px;
 }
 
-.data-female {
+.chart1-legend-side-channel-illustration {
     fill: lightcoral;
-}
-.data-male {
-    fill: deepskyblue;
 }
 
 .link {

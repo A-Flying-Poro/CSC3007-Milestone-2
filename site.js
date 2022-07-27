@@ -76,7 +76,7 @@ async function onLoad() {
                 .data(data)
                 .enter()
                 .append('circle')
-                .attr('class', 'chart1-plot-data')
+                .attr('class', 'chart1-plot-data chart-plot-data-hover')
                 .attr('data-industry', d => d.industry)
                 .attr('data-company', d => d.company)
                 .attr('fill', d => colourScale(d.industry))
@@ -146,8 +146,7 @@ async function onLoad() {
                 .attr('class', 'chart1-legend-side-channel-illustration')
                 .attr('cx', sizeScaleMax)
                 .attr('cy', d => d)
-                .attr('r', d => d)
-                .attr('fill', colourIndustry[4]);
+                .attr('r', d => d);
             svgLegendChannel.append('text')
                 .attr('class', 'chart1-legend-side-channel-label')
                 .attr('x', sizeScaleMax * 2 + legendInnerXPadding)
