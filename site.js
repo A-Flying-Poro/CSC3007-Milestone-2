@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 async function onLoad() {
-    let [data] = await Promise.all([
+    const [dataOriginal] = await Promise.all([
         d3.csv('data/company-profits.csv', data => ({
             company: data['Company'],
             industry: data['Industry'],
@@ -11,17 +11,21 @@ async function onLoad() {
             ranking: +data['Fortune 500 Rank'],
             profit: +data['Profit/Second']
         })),
-        // d3.json('data/links.json'),
     ]);
 
     // Data processing
-    data = data.sort((a, b) => b.profit - a.profit).slice(0, 5);
-    const industryNames = new Set();
-    data.forEach(companyProfit => industryNames.add(companyProfit.industry));
+    // data = data.sort((a, b) => b.profit - a.profit).slice(0, 5);
+    const industryNamesOriginal = new Set();
+    dataOriginal.forEach(companyProfit => industryNamesOriginal.add(companyProfit.industry));
 
     const tooltip = d3.select('#tooltip');
 
     (function chart1(){
+        // Data processing
+        const data = dataOriginal/*.sort((a, b) => b.profit - a.profit).slice(0, 5)*/;
+        const industryNames = new Set();
+        data.forEach(companyProfit => industryNames.add(companyProfit.industry));
+
         const viewBoxHeight = 500
         const viewBoxWidth = 800
         const marginX = 50
@@ -204,6 +208,9 @@ async function onLoad() {
     })();
 
     (function chart2(){
+        // Data processing
+        const data = dataOriginal.sort((a, b) => b.profit - a.profit).slice(0, 5);
+
         const viewBoxHeight = 500
         const viewBoxWidth = 800
         const marginX = 50
@@ -219,8 +226,6 @@ async function onLoad() {
         const svgDefs = svg.append('defs');
 
 
-
-        // Scales
 
         // Chart Stuff
         (function chart(){
@@ -278,6 +283,68 @@ async function onLoad() {
                 .attr('text-anchor', 'middle')
                 .attr('font-size', '1rem')
                 .text('Profits per second')
+        })();
+    })();
+
+    (function chart3() {
+        // Data processing
+        const data = [...industryNamesOriginal].map(industry => ({
+            industry: industry,
+            profit: d3.sum(dataOriginal.filter(d => d.industry === industry), d => d.profit)
+        })).sort((a, b) => b.profit - a.profit);
+
+        const viewBoxHeight = 500
+        const viewBoxWidth = 800
+        const marginX = 50
+        const marginY = 20
+        const height = viewBoxHeight - marginY * 2
+        const width = viewBoxWidth - marginX * 2
+
+        const svg = d3.select('#dataChart3')
+            .append('svg')
+            .attr('viewBox', [0, 0, viewBoxWidth, viewBoxHeight])
+            .append('g')
+            .attr('transform', `translate(${marginX}, ${marginY})`)
+        const svgDefs = svg.append('defs');
+
+
+
+        // Chart Stuff
+        (function chart() {
+            // const chartMarginX = 40
+            const chartMarginLeft = 40
+            const chartMarginRight = 20
+            const chartMarginY = 40
+            const chartWidth = width - chartMarginLeft - chartMarginRight
+            const chartHeight = height - chartMarginY * 2
+
+            const svgChart = svg.append('g')
+                .attr('transform', `translate(${chartMarginLeft}, ${chartMarginY})`);
+
+            // x-axis
+            const xAxis = d3.scaleBand()
+                .domain(data.map(d => d.industry))
+                .range([0, chartWidth])
+                .padding([0.4]);
+
+            // y-axis
+            const yAxis = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.profit)]).nice()
+                .range([chartHeight, 0]);
+
+            svgChart.append('g')
+                .attr('id', 'chart3-plot')
+                .selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'chart3-plot-data chart-plot-data-hover')
+                .attr('data-industry', d => d.industry)
+                .attr('data-profit', d => d.profit)
+                .attr('x', d => xAxis(d.industry))
+                .attr('y', d => yAxis(d.profit))
+                .attr('width', xAxis.bandwidth())
+                .attr('height', d => chartHeight - yAxis(d.profit));
         })();
     })();
 }
