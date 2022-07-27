@@ -241,7 +241,7 @@ async function onLoad() {
             const yAxis = d3.scaleBand()
                 .domain(data.map(d => d.company))
                 .range([0, chartHeight])
-                .padding([0.4]);
+                .padding([0.6]);
 
             // Data points
             svgChart.append('g')
