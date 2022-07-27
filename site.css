@@ -41,13 +41,13 @@ html {
     stroke: white;
 }
 
-.chart2-plot-data {
+/*.chart2-plot-data {
     fill: mistyrose;
-}
+}*/
 
-.chart3-plot-data {
+/*.chart3-plot-data {
     fill: rgb(238, 212, 170);
-}
+}*/
 
 .link {
     fill: none;

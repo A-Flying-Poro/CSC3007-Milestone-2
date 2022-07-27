@@ -353,6 +353,10 @@ async function onLoad() {
                 .range([0, chartHeight])
                 .padding([0.4]);
 
+            const colourScale = d3.scaleSequential()
+                .domain([0, data.length])
+                .interpolator(t => d3.interpolatePurples(t / 2 + 0.25));
+
             // Data points
             svgChart.append('g')
                 .attr('id', 'chart2-plot')
@@ -367,6 +371,7 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.company))
                 .attr('width', d => xAxis(d.profit))
                 .attr('height', yAxis.bandwidth())
+                .attr('fill', (d, i) => colourScale(i))
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide)
 
@@ -393,7 +398,6 @@ async function onLoad() {
                 .attr('id', 'chart2-axis-x')
                 .attr('transform', `translate(0, ${chartHeight})`)
                 .call(d3.axisBottom(xAxis).tickFormat(formatCurrency));
-
 
             // y-axis
             svgChart.append('g')
@@ -484,6 +488,10 @@ async function onLoad() {
                 .domain([0, d3.max(data, d => d.profit)]).nice()
                 .range([chartHeight, 0]);
 
+            const colourScale = d3.scaleSequential()
+                .domain([0, data.length])
+                .interpolator(t => d3.interpolateOranges(t / 2 + 0.25));
+
             // Data points
             svgChart.append('g')
                 .attr('id', 'chart3-plot')
@@ -498,6 +506,7 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.profit))
                 .attr('width', xAxis.bandwidth())
                 .attr('height', d => chartHeight - yAxis(d.profit))
+                .attr('fill', (d, i) => colourScale(i))
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide);
 
