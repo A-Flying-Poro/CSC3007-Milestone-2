@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 async function onLoad() {
-    let [data] = await Promise.all([
+    const [dataOriginal] = await Promise.all([
         d3.csv('data/company-profits.csv', data => ({
             company: data['Company'],
             industry: data['Industry'],
@@ -11,17 +11,21 @@ async function onLoad() {
             ranking: +data['Fortune 500 Rank'],
             profit: +data['Profit/Second']
         })),
-        // d3.json('data/links.json'),
     ]);
 
     // Data processing
-    data = data.sort((a, b) => b.profit - a.profit).slice(0, 5);
-    const industryNames = new Set();
-    data.forEach(companyProfit => industryNames.add(companyProfit.industry));
+    // data = data.sort((a, b) => b.profit - a.profit).slice(0, 5);
+    const industryNamesOriginal = new Set();
+    dataOriginal.forEach(companyProfit => industryNamesOriginal.add(companyProfit.industry));
 
     const tooltip = d3.select('#tooltip');
 
     (function chart1(){
+        // Data processing
+        const data = dataOriginal/*.sort((a, b) => b.profit - a.profit).slice(0, 5)*/;
+        const industryNames = new Set();
+        data.forEach(companyProfit => industryNames.add(companyProfit.industry));
+
         const viewBoxHeight = 500
         const viewBoxWidth = 800
         const marginX = 50
@@ -177,7 +181,7 @@ async function onLoad() {
                 .attr('id', 'chart1-legend-top-channels');
 
             const svgLegendChannel = svgLegendChannels.selectAll('g')
-                .data(industryNames.values())
+                .data(Array.from(industryNames.values()).slice(0, 4))
                 .enter()
                 .append('g')
                 .attr('class', 'chart1-legend-top-channel')
@@ -199,11 +203,45 @@ async function onLoad() {
                 .text(d => d);
 
             svgLegendChannel.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
-            svgLegendChannels.attr('transform', `translate(${(width - svgLegendChannels.node().getBBox().width) / 2}, 0)`);
+            svgLegendChannels.attr('transform', `translate(${(width - svgLegendChannels.node().getBBox().width) / 2}, -20)`);
+
+
+            const svgLegendChannels2 = svgLegend.append('g')
+            .attr('id', 'chart1-legend-top-channels');
+
+            const svgLegendChannel2 = svgLegendChannels2.selectAll('g')
+                    .data(Array.from(industryNames.values()).slice(-3))
+                    .enter()
+                    .append('g')
+                    .attr('class', 'chart1-legend-top-channel')
+                    .attr('data-channel', d => d);
+                svgLegendChannel2.append('circle')
+                    .attr('class', 'chart1-legend-top-channel-illustration')
+                    .attr('cx', legendCircleSize)
+                    .attr('cy', legendCircleSize)
+                    .attr('r', legendCircleSize)
+                    .attr('fill', d => colourScale(d));
+                svgLegendChannel2.append('text')
+                    .attr('class', 'chart1-legend-top-channel-label')
+                    .attr('x', legendCircleSize * 2 + legendInnerXPadding)
+                    .attr('y', legendCircleSize)
+                    .attr('text-anchor', 'left')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', 'currentColor')
+                    .attr('font-size', '0.7rem')
+                    .text(d => d);
+
+                console.log(Array.from(industryNames.values()).slice(-2))
+
+                svgLegendChannel2.attr('transform', (d, i) => `translate(${d3.sum(svgLegendChannels2.selectAll('.chart1-legend-top-channel').nodes().splice(0, i), d => d.getBBox().width) + legendBetweenXPadding * i}, 0)`);
+                svgLegendChannels2.attr('transform', `translate(${(width - svgLegendChannels2.node().getBBox().width) / 2}, 0)`);
         })();
     })();
 
     (function chart2(){
+        // Data processing
+        const data = dataOriginal.sort((a, b) => b.profit - a.profit).slice(0, 5);
+
         const viewBoxHeight = 500
         const viewBoxWidth = 800
         const marginX = 50
@@ -219,7 +257,7 @@ async function onLoad() {
         const svgDefs = svg.append('defs');
 
 
-        // Scales
+
         // Chart Stuff
         (function chart(){
             // const chartMarginX = 40
@@ -257,8 +295,8 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.company))
                 .attr('width', d => xAxis(d.profit))
                 .attr('height', yAxis.bandwidth())
-      
-            
+
+
             svgChart.selectAll("text")
             .attr('id', 'chart2-plot')
             .data(data)
@@ -273,9 +311,8 @@ async function onLoad() {
             .attr('fill', 'currentColor')
             .attr('font-size', '0.7rem')
             .text(function(d) { return '$' + d.profit; });
-         
-           
-                
+
+
 
             // Labels
             // x-axis
@@ -283,8 +320,8 @@ async function onLoad() {
                 .attr('id', 'chart2-axis-x')
                 .attr('transform', `translate(0, ${chartHeight})`)
                 .call(d3.axisBottom(xAxis).tickFormat(d3.format("-$,.2f")));
-            
-            
+
+
             // y-axis
             svgChart.append('g')
                 .attr('id', 'chart2-axis-y')
@@ -297,6 +334,68 @@ async function onLoad() {
                 .attr('text-anchor', 'middle')
                 .attr('font-size', '1rem')
                 .text('Profits per second')
+        })();
+    })();
+
+    (function chart3() {
+        // Data processing
+        const data = [...industryNamesOriginal].map(industry => ({
+            industry: industry,
+            profit: d3.sum(dataOriginal.filter(d => d.industry === industry), d => d.profit)
+        })).sort((a, b) => b.profit - a.profit);
+
+        const viewBoxHeight = 500
+        const viewBoxWidth = 800
+        const marginX = 50
+        const marginY = 20
+        const height = viewBoxHeight - marginY * 2
+        const width = viewBoxWidth - marginX * 2
+
+        const svg = d3.select('#dataChart3')
+            .append('svg')
+            .attr('viewBox', [0, 0, viewBoxWidth, viewBoxHeight])
+            .append('g')
+            .attr('transform', `translate(${marginX}, ${marginY})`)
+        const svgDefs = svg.append('defs');
+
+
+
+        // Chart Stuff
+        (function chart() {
+            // const chartMarginX = 40
+            const chartMarginLeft = 40
+            const chartMarginRight = 20
+            const chartMarginY = 40
+            const chartWidth = width - chartMarginLeft - chartMarginRight
+            const chartHeight = height - chartMarginY * 2
+
+            const svgChart = svg.append('g')
+                .attr('transform', `translate(${chartMarginLeft}, ${chartMarginY})`);
+
+            // x-axis
+            const xAxis = d3.scaleBand()
+                .domain(data.map(d => d.industry))
+                .range([0, chartWidth])
+                .padding([0.4]);
+
+            // y-axis
+            const yAxis = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.profit)]).nice()
+                .range([chartHeight, 0]);
+
+            svgChart.append('g')
+                .attr('id', 'chart3-plot')
+                .selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'chart3-plot-data chart-plot-data-hover')
+                .attr('data-industry', d => d.industry)
+                .attr('data-profit', d => d.profit)
+                .attr('x', d => xAxis(d.industry))
+                .attr('y', d => yAxis(d.profit))
+                .attr('width', xAxis.bandwidth())
+                .attr('height', d => chartHeight - yAxis(d.profit));
         })();
     })();
 }
