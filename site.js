@@ -285,12 +285,6 @@ async function onLoad() {
                 const values = [{
                     key: "Company", value: d.company
                 }, {
-                    key: "Industry", value: d.industry
-                }, {
-                    key: "2016 Net Income", value: formatSI(d.income).replace('G', 'B')
-                }, {
-                    key: "Fortune 500 Ranking", value: d.ranking
-                }, {
                     key: "Profit/sec", value: formatCurrency(d.profit)
                 }];
 
@@ -354,7 +348,7 @@ async function onLoad() {
                 .padding([0.4]);
 
             const colourScale = d3.scaleSequential()
-                .domain([0, data.length])
+                .domain([data.length, 0])
                 .interpolator(t => d3.interpolatePurples(t / 2 + 0.25));
 
             // Data points
@@ -489,7 +483,7 @@ async function onLoad() {
                 .range([chartHeight, 0]);
 
             const colourScale = d3.scaleSequential()
-                .domain([0, data.length])
+                .domain([data.length, 0])
                 .interpolator(t => d3.interpolateOranges(t / 2 + 0.25));
 
             // Data points
