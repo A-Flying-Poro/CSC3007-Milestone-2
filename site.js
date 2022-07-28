@@ -21,7 +21,12 @@ async function onLoad() {
     const formatCurrency = d3.format("-$,.2f");
     const formatSI = d3.format("-$~s");
 
-    // const tooltip = d3.select('#tooltip');
+
+
+    // Scales
+    const colourIndustry = d3.schemePastel1
+    const colourIndustryScale = d3.scaleOrdinal(colourIndustry)
+        .domain(industryNamesOriginal.values());
 
     (function chart1(){
         // Tooltip
@@ -79,9 +84,6 @@ async function onLoad() {
 
 
         // Scales
-        const colourIndustry = d3.schemePastel1
-        const colourScale = d3.scaleOrdinal(colourIndustry)
-            .domain(industryNames.values())
         const sizeMinIncome = 10
         const sizeMaxIncome = 30
         const sizeScale = d3.scaleLinear()
@@ -120,7 +122,7 @@ async function onLoad() {
                 .attr('class', 'chart1-plot-data chart-plot-data-hover')
                 .attr('data-industry', d => d.industry)
                 .attr('data-company', d => d.company)
-                .attr('fill', d => colourScale(d.industry))
+                .attr('fill', d => colourIndustryScale(d.industry))
                 .attr('r', d => sizeScale(d.income))
                 .attr('cx', d => xAxis(d.ranking))
                 .attr('cy', d => yAxis(d.profit))
@@ -230,7 +232,7 @@ async function onLoad() {
                 .attr('cx', legendCircleSize)
                 .attr('cy', legendCircleSize)
                 .attr('r', legendCircleSize)
-                .attr('fill', d => colourScale(d));
+                .attr('fill', d => colourIndustryScale(d));
             svgLegendChannel.append('text')
                 .attr('class', 'chart1-legend-top-channel-label')
                 .attr('x', legendCircleSize * 2 + legendInnerXPadding)
@@ -259,7 +261,7 @@ async function onLoad() {
                     .attr('cx', legendCircleSize)
                     .attr('cy', legendCircleSize)
                     .attr('r', legendCircleSize)
-                    .attr('fill', d => colourScale(d));
+                    .attr('fill', d => colourIndustryScale(d));
                 svgLegendChannel2.append('text')
                     .attr('class', 'chart1-legend-top-channel-label')
                     .attr('x', legendCircleSize * 2 + legendInnerXPadding)
@@ -482,10 +484,6 @@ async function onLoad() {
                 .domain([0, d3.max(data, d => d.profit)]).nice()
                 .range([chartHeight, 0]);
 
-            const colourScale = d3.scaleSequential()
-                .domain([data.length, 0])
-                .interpolator(t => d3.interpolateOranges(t / 2 + 0.25));
-
             // Data points
             svgChart.append('g')
                 .attr('id', 'chart3-plot')
@@ -500,7 +498,7 @@ async function onLoad() {
                 .attr('y', d => yAxis(d.profit))
                 .attr('width', xAxis.bandwidth())
                 .attr('height', d => chartHeight - yAxis(d.profit))
-                .attr('fill', (d, i) => colourScale(i))
+                .attr('fill', d => colourIndustryScale(d.industry))
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide);
 
