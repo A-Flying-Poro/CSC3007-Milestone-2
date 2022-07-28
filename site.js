@@ -381,7 +381,7 @@ async function onLoad() {
                 .attr('text-anchor', 'left')
                 .attr('dominant-baseline', 'middle')
                 .attr('fill', 'currentColor')
-                .attr('font-size', '0.7rem')
+                .attr('font-size', '1rem')
                 .text(d => formatCurrency(d.profit));
 
 
@@ -517,7 +517,7 @@ async function onLoad() {
                 .attr('text-anchor', 'middle')
                 .attr('dominant-baseline', 'middle')
                 .attr('fill', 'currentColor')
-                .attr('font-size', '0.7rem')
+                .attr('font-size', '1rem')
                 .text(d => formatCurrency(d.profit));
 
             // Labels
